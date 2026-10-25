@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cảnh báo mặt đường</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">⚠</span>
+      <div>
+        <h1>Cảnh báo bất thường mặt đường</h1>
+        <p>ESP32-CAM · YOLOv8 · thời gian thực</p>
+      </div>
+    </div>
+    <div class="chips">
+      <span class="chip" id="chip-camera"><i></i>Camera</span>
+      <span class="chip" id="chip-car"><i></i>Xe</span>
+      <span class="chip" id="chip-model"><i></i>Model</span>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="viewer">
+      <div class="screen">
+        <img id="video" src="/stream.mjpg" alt="Ảnh từ camera">
+        <div class="banner" id="banner" hidden></div>
+        <div class="offline" id="offline" hidden>Mất kết nối camera — đang thử lại…</div>
+      </div>
+      <div class="now" id="now">Đang chờ ảnh từ camera…</div>
+    </section>
+
+    <aside class="side">
+      <div class="card">
+        <h2>Cảnh báo gần nhất</h2>
+        <div class="last" id="last">Chưa có</div>
+      </div>
+
+      <div class="card">
+        <h2>Xe ESP32-CAM</h2>
+        <dl class="facts">
+          <dt>Địa chỉ</dt><dd id="car-ip">—</dd>
+          <dt>Trạng thái</dt><dd id="car-state">—</dd>
+          <dt>Lệnh còi gần nhất</dt><dd id="car-alert">—</dd>
+        </dl>
+        <div class="buttons">
+          <button data-test="speed_bump">Thử còi · gờ</button>
+          <button data-test="pothole">Thử còi · ổ gà</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Thống kê</h2>
+        <div class="stats">
+          <div><b id="count-pothole">0</b><span>Ổ gà</span></div>
+          <div><b id="count-speed_bump">0</b><span>Gờ giảm tốc</span></div>
+          <div><b id="cam-fps">—</b><span>Ảnh/giây</span></div>
+          <div><b id="infer-ms">—</b><span>ms/ảnh (AI)</span></div>
+        </div>
+        <label class="switch"><input type="checkbox" id="sound" checked> Phát âm thanh trên laptop</label>
+      </div>
+    </aside>
+
+    <section class="card log">
+      <h2>Nhật ký cảnh báo</h2>
+      <table>
+        <thead><tr><th>Thời gian</th><th>Loại</th><th>Độ tin cậy</th></tr></thead>
+        <tbody id="log"><tr class="empty"><td colspan="3">Chưa có cảnh báo</td></tr></tbody>
+      </table>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

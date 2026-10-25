@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Cấu hình cá nhân
+.env
+
+# Dữ liệu và kết quả train (to, không đưa lên GitHub)
+datasets/
+dataset_raw/
+runs/
+*.zip
+yolov8n.pt
+yolo11n.pt
+
+# Nhật ký khi chạy
+detection_log.csv
+*.db
+
+# Hệ điều hành / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

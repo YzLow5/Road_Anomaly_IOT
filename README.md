@@ -21,17 +21,17 @@ laptop **gửi lệnh còi ngược về xe**, hiện cảnh báo trên web dash
 | --- | --- | --- |
 | `firmware/esp32cam_car/` | Code ESP32-CAM: stream, chụp ảnh, nhận lệnh còi, OTA | TV2 |
 | `tools/capture_dataset.py` | Chụp ảnh dataset liên tục từ ESP32-CAM | TV2 |
-| `tools/merge_datasets.py` | Gộp dataset Roboflow về 2 lớp `pothole`, `speed_bump` | TV1 |
-| `training/train_colab.ipynb` | Notebook train YOLOv8n trên Google Colab | TV1 |
-| `models/` | Model của nhóm (`road_best.pt`) + 2 model mẫu | TV1 |
-| `main.py` | Chạy hệ thống trên laptop | TV3 |
-| `webapp/camera.py` | Đọc ảnh từ ESP32-CAM / webcam / video, tự kết nối lại | TV3 |
-| `webapp/detector.py` | Nạp model YOLOv8, phát hiện ổ gà và gờ giảm tốc | TV1 |
-| `webapp/alerts.py` | Chống báo giả: xác nhận qua nhiều khung liên tiếp + thời gian chờ | TV1 |
+| `tools/merge_datasets.py` | Gộp dataset Roboflow về 2 lớp `pothole`, `speed_bump` | TV3 |
+| `training/train_colab.ipynb` | Notebook train YOLOv8n trên Google Colab | TV3 |
+| `models/` | Model của nhóm (`road_best.pt`) + 2 model mẫu | TV3 |
+| `main.py` | Chạy hệ thống trên laptop | TV1 |
+| `webapp/camera.py` | Đọc ảnh từ ESP32-CAM / webcam / video, tự kết nối lại | TV1 |
+| `webapp/detector.py` | Nạp model YOLOv8, phát hiện ổ gà và gờ giảm tốc | TV3 |
+| `webapp/alerts.py` | Chống báo giả: xác nhận qua nhiều khung liên tiếp + thời gian chờ | TV3 |
 | `webapp/pipeline.py` | Luồng xử lý: ảnh → model → cảnh báo | TV1 + TV3 |
-| `webapp/device.py` | Gửi lệnh còi tới xe, theo dõi xe online/offline | TV3 |
-| `webapp/notify.py` | Gửi Telegram kèm ảnh | TV3 |
-| `webapp/app.py`, `webapp/static/` | API FastAPI + giao diện dashboard | TV3 |
+| `webapp/device.py` | Gửi lệnh còi tới xe, theo dõi xe online/offline | TV1 |
+| `webapp/notify.py` | Gửi Telegram kèm ảnh | TV1 |
+| `webapp/app.py`, `webapp/static/` | API FastAPI + giao diện dashboard | TV1 |
 | `docs/` | Báo cáo, sơ đồ nối dây, test case, biên bản họp | TV4 |
 
 ## Hợp đồng giao tiếp
@@ -92,7 +92,7 @@ Lần nạp đầu nên để `USE_STATIC_IP 0`, xem Serial Monitor để biết
 
 Nối dây và cấp nguồn trên xe: xem [docs/noi-day.md](docs/noi-day.md).
 
-## Dataset và train (TV1)
+## Dataset và train (TV3)
 
 1. Tải dataset trên Roboflow Universe dạng **YOLOv8** (ví dụ *Road Objects*, *Humps/Bumps & Potholes*), giải nén vào `datasets/`.
 2. Gộp và đổi nhãn về 2 lớp:
@@ -109,7 +109,7 @@ Nối dây và cấp nguồn trên xe: xem [docs/noi-day.md](docs/noi-day.md).
 
 ## Quy tắc làm việc với Git
 
-- Nhánh theo mảng: `ai` (TV1), `iot` (TV2), `web` (TV3), `docs` (TV4). Cuối mỗi đợt merge vào `main`.
+- Nhánh theo mảng: `ai` (TV3), `iot` (TV2), `web` (TV1), `docs` (TV4). Cuối mỗi đợt merge vào `main`.
 - Không commit `.env`, dataset, thư mục `runs/` (đã có trong `.gitignore`).
 - Commit nhỏ, ghi rõ việc gì: `iot: thêm tự kết nối lại Wi-Fi`.
 

@@ -16,15 +16,18 @@ class Store:
         self.detections: list[dict] = []
         self.detections_frame = 0
         self.infer_ms = 0.0
+        self.camera_blocked = False
         self.events: deque = deque(maxlen=max_events)
         self._next_event_id = 1
         self.counts = {"pothole": 0, "speed_bump": 0}
 
-    def set_detections(self, detections: list[dict], frame_index: int, infer_ms: float) -> None:
+    def set_detections(self, detections: list[dict], frame_index: int, infer_ms: float,
+                       camera_blocked: bool = False) -> None:
         with self._lock:
             self.detections = detections
             self.detections_frame = frame_index
             self.infer_ms = infer_ms
+            self.camera_blocked = camera_blocked
 
     def get_detections(self) -> list[dict]:
         with self._lock:
@@ -55,6 +58,7 @@ class Store:
             return {
                 "detections": list(self.detections),
                 "infer_ms": round(self.infer_ms),
+                "camera_blocked": self.camera_blocked,
                 "counts": dict(self.counts),
                 "last_event": dict(last, seconds_ago=round(time.time() - last["epoch"], 1))
                 if last else None,

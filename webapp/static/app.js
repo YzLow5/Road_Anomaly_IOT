@@ -66,7 +66,9 @@ function renderStatus(s) {
   $("cam-fps").textContent = s.camera.fps || "—";
   $("infer-ms").textContent = s.infer_ms || "—";
 
-  $("now").textContent = s.detections.length
+  $("now").textContent = s.camera_blocked && s.camera.online
+    ? "Camera bị che hoặc quá tối"
+    : s.detections.length
     ? "Đang thấy: " + s.detections.map(d => `${NAME[d.label]} ${(d.confidence * 100).toFixed(0)}%`).join(", ")
     : s.camera.online ? "Mặt đường bình thường" : "Đang chờ ảnh từ camera…";
 

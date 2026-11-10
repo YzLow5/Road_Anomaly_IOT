@@ -60,6 +60,11 @@ CONFIRM_FRAMES = int(_get_float("CONFIRM_FRAMES", 2))
 # Sau khi đã báo một loại, chờ bao nhiêu giây mới báo lại loại đó.
 ALERT_COOLDOWN = _get_float("ALERT_COOLDOWN", 2.0)
 
+# Khung quá tối (độ sáng trung bình) hoặc gần như một màu (độ lệch chuẩn) thường
+# là camera bị che: bỏ qua, không chạy model. Thang 0–255 trên ảnh xám.
+MIN_BRIGHTNESS = _get_float("MIN_BRIGHTNESS", 40)
+MIN_CONTRAST = _get_float("MIN_CONTRAST", 15)
+
 # ── Thiết bị trên xe ───────────────────────────────────────────────────────
 DEVICE_TIMEOUT = _get_float("DEVICE_TIMEOUT", 0.5)
 

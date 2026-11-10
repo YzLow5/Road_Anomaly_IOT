@@ -10,6 +10,8 @@ import csv
 import threading
 import time
 
+import cv2
+
 from webapp import config, overlay
 from webapp.alerts import AlertPolicy
 from webapp.camera import Camera
@@ -19,6 +21,13 @@ from webapp.notify import telegram
 from webapp.store import Store
 
 LOG_FILE = config.PROJECT_ROOT / "detection_log.csv"
+
+
+def is_blocked(image) -> bool:
+    """Khung quá tối hoặc gần như một màu (tay che, nắp ống kính)."""
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    mean, std = cv2.meanStdDev(gray)
+    return bool(mean[0][0] < config.MIN_BRIGHTNESS or std[0][0] < config.MIN_CONTRAST)
 
 
 class Pipeline(threading.Thread):
@@ -43,10 +52,13 @@ class Pipeline(threading.Thread):
                 continue
             last_index = frame.index
 
+            # Camera bị che / quá tối: không chạy model. Danh sách rỗng cũng làm
+            # AlertPolicy xóa chuỗi khung đang đếm, nên không có cảnh báo nào.
+            blocked = is_blocked(frame.image)
             started = time.perf_counter()
-            detections = [d.to_dict() for d in self.detector.detect(frame.image)]
+            detections = [] if blocked else [d.to_dict() for d in self.detector.detect(frame.image)]
             infer_ms = (time.perf_counter() - started) * 1000
-            self.store.set_detections(detections, frame.index, infer_ms)
+            self.store.set_detections(detections, frame.index, infer_ms, camera_blocked=blocked)
 
             best = {}
             for det in detections:

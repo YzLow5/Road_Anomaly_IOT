@@ -109,7 +109,7 @@ def merge(sources: list[Path], out: Path) -> None:
 
     (out / "data.yaml").write_text(
         "# Tạo bởi tools/merge_datasets.py\n"
-        "path: .\ntrain: train/images\nval: valid/images\ntest: test/images\n"
+        "train: train/images\nval: valid/images\ntest: test/images\n"
         "nc: 2\nnames: [pothole, speed_bump]\n", encoding="utf-8")
 
     print("\nKết quả (số ảnh có chứa mỗi loại):")

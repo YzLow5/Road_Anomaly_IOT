@@ -51,7 +51,7 @@ Ba người làm chính dựa vào bảng này để làm song song. Đổi giá
 
 ## Chạy server trên laptop
 
-Cần Python 3.10–3.12.
+Cần Python 3.10–3.13.
 
 ```bash
 python -m venv .venv

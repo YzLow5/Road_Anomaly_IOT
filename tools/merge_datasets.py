@@ -11,8 +11,10 @@ train/ valid/ test/, mỗi phần có images/ và labels/).
 Quy tắc đổi nhãn (theo tên lớp trong data.yaml, không phân biệt hoa thường):
     tên chứa "pothole"                          → 0 pothole
     tên chứa "bump", "hump", "breaker", "speed"  → 1 speed_bump
-    tên chứa "normal", "plain", "road"          → bỏ khung (ảnh thành "bình thường")
-    lớp khác (barricade, crack…)                → bỏ CẢ ẢNH, vì để lại sẽ dạy sai model
+    tên chứa "normal", "plain", hoặc đúng "road" → bỏ khung (ảnh thành "bình thường")
+    lớp khác (barricade, crack, road damage…)   → bỏ CẢ ẢNH, vì để lại sẽ dạy sai model
+
+Nhãn dạng polygon (segmentation) được đổi thành khung bao (bounding box).
 """
 
 import argparse
@@ -31,9 +33,20 @@ def map_class(name: str):
         return 0
     if any(k in n for k in ("bump", "hump", "breaker", "speed")):
         return 1
-    if any(k in n for k in ("normal", "plain", "road")):
+    # Chỉ coi là "bình thường" khi tên rõ ràng; "road crack", "road damage"… phải bỏ ảnh
+    if any(k in n for k in ("normal", "plain")) or n.strip() == "road":
         return "background"
     return None
+
+
+def to_box(parts: list[str]) -> list[str]:
+    """Trả về [cx, cy, w, h]. Dòng polygon (x1 y1 x2 y2 ...) được đổi thành khung bao."""
+    if len(parts) == 5:
+        return parts[1:5]
+    coords = [float(v) for v in parts[1:]]
+    xs, ys = coords[0::2], coords[1::2]
+    x0, x1, y0, y1 = min(xs), max(xs), min(ys), max(ys)
+    return [f"{v:.6f}" for v in ((x0 + x1) / 2, (y0 + y1) / 2, x1 - x0, y1 - y0)]
 
 
 def read_names(data_yaml: Path) -> list[str]:
@@ -94,7 +107,7 @@ def merge(sources: list[Path], out: Path) -> None:
                         break
                     if target == "background":
                         continue
-                    new_lines.append(" ".join([str(target)] + parts[1:5]))
+                    new_lines.append(" ".join([str(target)] + to_box(parts)))
                 if drop:
                     stats["bỏ (lớp lạ)"] += 1
                     continue
@@ -116,6 +129,10 @@ def merge(sources: list[Path], out: Path) -> None:
     for split in ("train", "valid", "test"):
         print(f"  {split:5}: {stats[f'{split}:ảnh']:5} ảnh — ổ gà {stats[f'{split}:pothole']}, "
               f"gờ {stats[f'{split}:speed_bump']}, bình thường {stats[f'{split}:normal']}")
+    print("\nTổng 3 nhóm (yêu cầu mỗi nhóm ≥ 100 ảnh):")
+    for k, label in (("pothole", "ổ gà"), ("speed_bump", "gờ giảm tốc"), ("normal", "bình thường")):
+        n = sum(stats[f"{s}:{k}"] for s in ("train", "valid", "test"))
+        print(f"  {label:12}: {n:5}  {'ĐẠT' if n >= 100 else 'THIẾU'}")
     if stats["bỏ (lớp lạ)"]:
         print(f"  Bỏ {stats['bỏ (lớp lạ)']} ảnh có lớp không thuộc đề tài")
     print(f"\nData.yaml: {out / 'data.yaml'}")

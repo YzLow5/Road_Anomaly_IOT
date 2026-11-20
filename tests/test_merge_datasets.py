@@ -78,14 +78,10 @@ def test_data_yaml_hai_lop_va_khong_co_path(merged):
     assert not any(line.startswith("path:") for line in text.splitlines())
 
 
-@pytest.mark.xfail(strict=True, reason="merge_datasets.py chưa đổi polygon thành khung bao: "
-                                       "lấy 4 số đầu của polygon làm cx cy w h")
 def test_polygon_doi_thanh_khung_bao(merged):
     cx, cy, w, h = map(float, _label(merged, "test", "s0_polygon").split()[1:])
     assert (cx, cy, w, h) == pytest.approx((0.4, 0.4, 0.4, 0.2))
 
 
-@pytest.mark.xfail(strict=True, reason="'Road Crack' chứa chữ 'road' nên map_class() coi là "
-                                       "mặt đường bình thường thay vì bỏ ảnh")
 def test_anh_road_crack_bi_bo(merged):
     assert not (merged / "train" / "images" / "s1_crack.png").exists()

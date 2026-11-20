@@ -1,11 +1,6 @@
 """Kiểm tra AlertPolicy trong webapp/alerts.py: xác nhận nhiều khung + thời gian chờ."""
 
-import sys
-from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
-from webapp.alerts import AlertPolicy  # noqa: E402
+from webapp.alerts import AlertPolicy
 
 
 def test_chua_du_khung_lien_tiep_thi_chua_bao():
